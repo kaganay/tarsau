@@ -1,0 +1,5 @@
+This is the second sample text file.
+Multiple lines of plain ASCII content.
+Numbers: 42, 1337, 9001
+Symbols: . , ; : ' " < > / ?
+End of file.

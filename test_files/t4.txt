@@ -1,0 +1,5 @@
+Dorduncu dosya, daha cok satir iceriyor.
+Satir 2.
+Satir 3.
+Satir 4.
+Satir 5: end.

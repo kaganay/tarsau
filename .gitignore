@@ -1,0 +1,21 @@
+# Derleme ciktisi
+tarsau
+*.o
+
+# Arsiv test ciktilari
+*.sau
+cikti/
+out/
+out1/
+out2/
+out3/
+out_inplace/
+test_out/
+test_out2/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp

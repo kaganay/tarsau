@@ -1,0 +1,4 @@
+Merhaba, bu birinci ornek metin dosyasidir.
+Sistem Programlama dersi icin tarsau projesi.
+Iceride birkac satir ve sayilar var: 12345
+Ozel karakterler: ! @ # $ % ^ & * ( ) _ + - = [ ] { }
