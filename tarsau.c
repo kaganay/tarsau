@@ -1,4 +1,4 @@
-/*
+﻿/*
  * tarsau - sikistirma yapmayan basit arsivleyici
  *
  * Sistem Programlama 2025-2026 Bahar Donemi Projesi
@@ -134,14 +134,14 @@ static int cmd_archive(int argc, char *argv[]) {
     for (int i = 2; i < argc; i++) {
         if (strcmp(argv[i], "-o") == 0) {
             if (i + 1 >= argc) {
-                fprintf(stderr, "-o parametresinden sonra arsiv adi belirtilmelidir!\n");
+                fprintf(stderr, "-o parametresinden sonra arşiv adı belirtilmelidir!\n");
                 return 1;
             }
             output = argv[i + 1];
             i++;
         } else {
             if (file_count >= MAX_FILES) {
-                fprintf(stderr, "En fazla %d giris dosyasi arsivlenebilir!\n", MAX_FILES);
+                fprintf(stderr, "En fazla %d giriş dosyası arşivlenebilir!\n", MAX_FILES);
                 return 1;
             }
             files[file_count++] = argv[i];
@@ -149,7 +149,7 @@ static int cmd_archive(int argc, char *argv[]) {
     }
 
     if (file_count == 0) {
-        fprintf(stderr, "En az bir giris dosyasi belirtmelisiniz!\n");
+        fprintf(stderr, "En az bir giriş dosyası belirtmelisiniz!\n");
         print_usage(argv[0]);
         return 1;
     }
@@ -160,25 +160,25 @@ static int cmd_archive(int argc, char *argv[]) {
         const char *fp = files[i];
 
         if (access(fp, R_OK) != 0) {
-            fprintf(stderr, "%s dosyasi acilamiyor: %s\n", fp, strerror(errno));
+            fprintf(stderr, "%s dosyası açılamıyor: %s\n", fp, strerror(errno));
             return 1;
         }
 
         struct stat st;
         if (stat(fp, &st) != 0 || !S_ISREG(st.st_mode)) {
-            fprintf(stderr, "%s gecerli bir dosya degil!\n", fp);
+            fprintf(stderr, "%s geçerli bir dosya değil!\n", fp);
             return 1;
         }
 
         if (!check_text_file(fp)) {
-            fprintf(stderr, "%s giris dosyasinin formati uyumsuzdur!\n", fp);
+            fprintf(stderr, "%s giriş dosyasının formatı uyumsuzdur!\n", fp);
             return 1;
         }
 
         total_size += (long)st.st_size;
         if (total_size > MAX_TOTAL_BYTES) {
             fprintf(stderr,
-                "Giris dosyalarinin toplam boyutu 200 MB siniri asti!\n");
+                "Giriş dosyalarının toplam boyutu 200 MB sınırını aştı!\n");
             return 1;
         }
     }
@@ -299,7 +299,7 @@ static int mkdir_p(const char *path, mode_t mode) {
 
 static int cmd_extract(int argc, char *argv[]) {
     if (argc < 3) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         return 1;
     }
     if (argc > 4) {
@@ -314,19 +314,19 @@ static int cmd_extract(int argc, char *argv[]) {
     /* .sau uzantisi kontrolu */
     size_t alen = strlen(archive);
     if (alen < 4 || strcmp(archive + alen - 4, ".sau") != 0) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         return 1;
     }
 
     FILE *in = fopen(archive, "rb");
     if (!in) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         return 1;
     }
 
     /* Toplam dosya boyutu (bozukluk kontrolu icin) */
     if (fseek(in, 0, SEEK_END) != 0) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         fclose(in);
         return 1;
     }
@@ -334,7 +334,7 @@ static int cmd_extract(int argc, char *argv[]) {
     rewind(in);
 
     if (file_total < HEADER_PREFIX) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         fclose(in);
         return 1;
     }
@@ -342,14 +342,14 @@ static int cmd_extract(int argc, char *argv[]) {
     /* Ilk 10 bayt -> first section size */
     char prefix[HEADER_PREFIX + 1];
     if (fread(prefix, 1, HEADER_PREFIX, in) != HEADER_PREFIX) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         fclose(in);
         return 1;
     }
     prefix[HEADER_PREFIX] = '\0';
     for (int i = 0; i < HEADER_PREFIX; i++) {
         if (!isdigit((unsigned char)prefix[i])) {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             fclose(in);
             return 1;
         }
@@ -357,7 +357,7 @@ static int cmd_extract(int argc, char *argv[]) {
     long first_section_size = atol(prefix);
     long org_len = first_section_size - HEADER_PREFIX;
     if (org_len <= 0 || first_section_size > file_total) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         fclose(in);
         return 1;
     }
@@ -369,7 +369,7 @@ static int cmd_extract(int argc, char *argv[]) {
         return 1;
     }
     if ((long)fread(org, 1, (size_t)org_len, in) != org_len) {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         free(org);
         fclose(in);
         return 1;
@@ -378,7 +378,7 @@ static int cmd_extract(int argc, char *argv[]) {
 
     /* Ilk karakter '|' olmalidir */
     if (org[0] != '|') {
-        fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+        fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
         free(org);
         fclose(in);
         return 1;
@@ -408,7 +408,7 @@ static int cmd_extract(int argc, char *argv[]) {
     int extracted = 0;
     while (*p) {
         if (*p != '|') {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             free(org);
             fclose(in);
             return 1;
@@ -420,7 +420,7 @@ static int cmd_extract(int argc, char *argv[]) {
 
         char rec[MAX_PATH_LEN + 64];
         if (reclen >= sizeof(rec)) {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             free(org);
             fclose(in);
             return 1;
@@ -430,13 +430,13 @@ static int cmd_extract(int argc, char *argv[]) {
 
         char *c1 = strchr(rec, ',');
         if (!c1) {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             free(org); fclose(in); return 1;
         }
         *c1 = '\0';
         char *c2 = strchr(c1 + 1, ',');
         if (!c2) {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             free(org); fclose(in); return 1;
         }
         *c2 = '\0';
@@ -449,12 +449,12 @@ static int cmd_extract(int argc, char *argv[]) {
         char *endp = NULL;
         long perm = strtol(permstr, &endp, 8);
         if (!endp || *endp != '\0' || perm < 0 || perm > 0777) {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             free(org); fclose(in); return 1;
         }
         long fsize = strtol(sizestr, &endp, 10);
         if (!endp || *endp != '\0' || fsize < 0) {
-            fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+            fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
             free(org); fclose(in); return 1;
         }
 
@@ -480,7 +480,7 @@ static int cmd_extract(int argc, char *argv[]) {
                             ? sizeof(io_buf) : (size_t)remaining;
             size_t got = fread(io_buf, 1, want, in);
             if (got == 0) {
-                fprintf(stderr, "Arsiv dosyasi uygunsuz veya bozuk!\n");
+                fprintf(stderr, "Arşiv dosyası uygunsuz veya bozuk!\n");
                 fclose(out); free(org); fclose(in); return 1;
             }
             if (fwrite(io_buf, 1, got, out) != got) {
